@@ -20,10 +20,14 @@ public class TextGame {
     
     public static int GOLD = 15, WALLET = 50;
     public static int toNext, EXPLEVEL = 15;
-    public static int[] itemNo = {3};
-    public static int[] idgafShopValue = {10};
-    public static String[] idgafShopInven = {"1.Health Potion\t\t"+ idgafShopValue[0]};
-    public static String[] inven = {"1.Health Potion\t\t"+ itemNo[0]};
+    public static String[] items = {"Health Potion", "Sharp Stick"};
+    public static int[] invenNo = {3,
+    		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    public static int[] idgafShopValue = {10, 40};
+    public static String[] idgafShopInven = {"1." + items[0]+"\t\t"+ idgafShopValue[0], "2." + items[1]+"\t\t"+ idgafShopValue[1],
+    		null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null};
+    public static String[] inven = {"1." + items[0]+"\t\t"+ invenNo[0],
+    		null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null};
     public static int MAXPLAYERHP, PLAYERHP, PLAYERATK;
     public static double PLAYERACC, PLAYERAGI;
     public static int MAXENEMYHP, ENEMYHP, ENEMYATK, idx;
@@ -31,6 +35,9 @@ public class TextGame {
     public static String PLAYERNAME, PLAYERCLASS, PLAYERATKTYPE;
     public static Random rd = new Random();
     public static Scanner input = new Scanner(System.in);
+	public static int buying;
+	public static Health heal = new Health(PLAYERHP);
+	public static idgafShop idgafShop = new idgafShop();
     public static void main(String[] args) throws InterruptedException {
         for(boolean charDone = false; charDone == false;){
             System.out.print("Choose a name for yourself:");
@@ -57,7 +64,7 @@ public class TextGame {
                         PLAYERACC = .90;
                         PLAYERAGI = .10;
                         PLAYERCLASS = "Warrior";
-                        PLAYERATKTYPE = "Sword";
+                        PLAYERATKTYPE = "Dull Wooden Sword";
                         selected = true;
                         break;
                     case "2":
@@ -104,9 +111,9 @@ public class TextGame {
                 System.out.println("From the top.");
             }
         }
-        Health heal = new Health(PLAYERHP);
+        
         //forest starts here
-        for (int encounters = 0;PLAYERHP>0 && encounters <= 5; encounters++){
+        for (int encounters = 1;PLAYERHP>0 && encounters <= 5; encounters++){
             idx = rd.nextInt(3);
             String[] enemy = {"a Skeleton", "a Slime", "Tim Cao"};
             System.out.println("you are attacked by " + enemy[idx] + "!");
@@ -157,9 +164,9 @@ public class TextGame {
                         System.out.println(Arrays.toString(inven));
                         System.out.print("Enter the list number of the item to be used:");
                         int itemUsed = input.nextInt();
-                        if(itemUsed == 1 && itemNo[0]>=1){
-                            itemNo[0]=itemNo[0] - 1;
-                            inven[0] = "1.Health Potion\t\t"+itemNo[0];
+                        if(itemUsed == 1 && invenNo[0]>=1){
+                            invenNo[0]=invenNo[0] - 1;
+                            inven[0] = "1.Health Potion\t\t"+invenNo[0];
                             heal.setHealthValue(PLAYERHP + 20);
                             PLAYERHP = heal.getHealthValue();
                             System.out.println(PLAYERNAME + " healed for 20 HP!");
@@ -169,7 +176,7 @@ public class TextGame {
                         break;
                     case "3":
                         double run = Math.random();
-                        if(run >= PLAYERAGI){
+                        if(run/PLAYERAGI >= 1){
                             System.out.println(PLAYERNAME + " escaped from the Skeleton");
                             runaway = true;
                             TimeUnit.SECONDS.sleep(2);
@@ -241,9 +248,9 @@ public class TextGame {
                             System.out.println(Arrays.toString(inven));
                             System.out.print("Enter the list number of the item to be used:");
                             int itemUsed = input.nextInt();
-                            if(itemUsed == 1 && itemNo[0]>=1){
-                                itemNo[0]=itemNo[0] - 1;
-                                inven[0] = "1.Health Potion\t\t"+itemNo[0];
+                            if(itemUsed == 1 && invenNo[0]>=1){
+                                invenNo[0]=invenNo[0] - 1;
+                                inven[0] = "1.Health Potion\t\t"+invenNo[0];
                                 heal.setHealthValue(PLAYERHP + 20);
                                 PLAYERHP = heal.getHealthValue();
                                 System.out.println(PLAYERNAME + " healed for 20 HP!");
@@ -321,9 +328,9 @@ public class TextGame {
                             System.out.println(Arrays.toString(inven));
                             System.out.print("Enter the list number of the item to be used:");
                             int itemUsed = input.nextInt();
-                            if(itemUsed == 1 && itemNo[0]>=1){
-                                itemNo[0]=itemNo[0] - 1;
-                                inven[0] = "1.Health Potion\t\t"+itemNo[0];
+                            if(itemUsed == 1 && invenNo[0]>=1){
+                                invenNo[0]=invenNo[0] - 1;
+                                inven[0] = "1.Health Potion\t\t"+invenNo[0];
                                 heal.setHealthValue(PLAYERHP + 20);
                                 PLAYERHP = heal.getHealthValue();
                                 System.out.println(PLAYERNAME + " healed for 20 HP!");
@@ -371,19 +378,44 @@ public class TextGame {
                 String response = input.next();
                 if (response.equals("y")){
                     PLAYERHP = MAXPLAYERHP;
-                    itemNo[1] = 3;
+                    invenNo[1] = 3;
                 }else
                     System.exit(GOLD);
         }
         }
         System.out.println(PLAYERNAME + " reached the town of Idgaf");
+        System.out.print(PLAYERNAME + " sees in front of "+ PLAYERNAME + ":\n\t1.A shop\n\t2.An Inn\n\t3.A Foreboding Ruins\nWhere does "+ PLAYERNAME + " go?");
         for(boolean inIdgaf = true; inIdgaf = true;){
-        System.out.print(PLAYERNAME + " see in front of you:\n\t1.A shop\n\t2.An Inn\n\t3.A Foreboding Ruins\nWhere does "+ PLAYERNAME + " go?");
         String response = input.nextLine();
         if(response.equals("1") || response.equals("shop")){
         	for(boolean inShop = true; inShop = true;){
-        		
-        		System.out.println(Arrays.toString(idgafShopInven));
+        		System.out.print("What would you like to do?\n\t1.Buy\n\t2.Talk\n\t3.Exit\n");
+        		String doing = input.next();
+        		switch(doing){
+	        		case"1":
+	        		case"shop":
+	        		case"Shop":
+	        			System.out.println(Arrays.toString(idgafShopInven));
+	        			System.out.print("Enter the list number of the item you wish to purchase: ");
+	        			buying = input.nextInt() - 1;
+	        			idgafShop.setInven(buying);
+	        			WALLET = idgafShop.getGold();
+	        			invenNo[buying] = idgafShop.getInven();
+	        			inven[buying] = items[buying] + "\t\t" + invenNo[buying];
+	        			//testing the shop
+	        			//System.out.println(Arrays.toString(inven) + "\t\t" + WALLET);
+	        			break;
+	        		case"2":
+	        		case"talk":
+	        		case"Talk":
+	        			System.out.println("We've got everything you could ever need here, potions, weapons, you name it!");
+	        			break;
+	        		case"3":
+	        		case"exit":
+	        		case"Exit":
+	        			inShop = false;
+	        			break;
+        		}
         	}
         	
         }
