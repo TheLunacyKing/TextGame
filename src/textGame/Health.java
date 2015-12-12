@@ -11,15 +11,14 @@ package textGame;
  */
 public class Health {
 
-    TextGame TextGame = new TextGame();
-    int value = TextGame.PLAYERHP;
-    int MAXPLAYERHP = TextGame.MAXPLAYERHP;
+    private static int value;
+    private static int MAXPLAYERHP;
 
     public Health(int value) {
         if (value < 0 || value > MAXPLAYERHP) {
             throw new IllegalArgumentException();
         } else {
-            this.value = value;
+            Health.value = value;
         }
     }
 
@@ -29,6 +28,7 @@ public class Health {
     }
 
     public void setHealthValue(int newValue) {
+    	MAXPLAYERHP = textGame.TextGame.MAXPLAYERHP;
         if (newValue < 0 || newValue > MAXPLAYERHP) {
             value = MAXPLAYERHP;
         } else {
