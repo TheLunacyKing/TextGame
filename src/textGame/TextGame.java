@@ -5,7 +5,7 @@ package textGame;
 
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,6 +35,7 @@ public class TextGame {
 	public static int buying;
 	public static Health heal = new Health(MAXPLAYERHP);
 	public static idgafShop idgafShop = new idgafShop();
+	public static BattleCommands battle = new BattleCommands();
     public static void main(String[] args) throws InterruptedException {
 //		        Setting array values
     			items[0] = "Health Potion";
@@ -125,6 +126,7 @@ public class TextGame {
             idx = rd.nextInt(3);
             String[] enemy = {"a Skeleton", "a Slime", "Tim Cao"};
             System.out.println("you are attacked by " + enemy[idx] + "!");
+            String ENEMYTYPE = enemy[idx];
             TimeUnit.SECONDS.sleep(1);
             switch (idx) {
                 case 0:
@@ -143,13 +145,10 @@ public class TextGame {
                         String response = input.next();
                 switch (response) {
                     case "1":
-                        int damage = rd.nextInt((PLAYERATK-(PLAYERATK-3))+1)+(PLAYERATK-3);
-                        double hit = Math.random();
-                        double dodge = Math.random();
-                        if(hit < PLAYERACC && dodge > ENEMYAGI){
-                            ENEMYHP = ENEMYHP - damage;
-                            System.out.println("\nYou hit the Skeleton with your " + PLAYERATKTYPE);
-                            System.out.println("The skeleton took" + damage +".\nit now has " + ENEMYHP);
+                        if(battle.hitEnemy() == true){
+                        	battle.damageEnemy();
+                            ENEMYHP = battle.getEnemyHp();
+                            System.out.println(battle.enemyHitText(ENEMYTYPE));
                             TimeUnit.SECONDS.sleep(2);
 
                         }else{
@@ -237,13 +236,10 @@ public class TextGame {
                                 + "\n\t3.Run");
                         String response = input.next();
                         if (response.equals("1")){
-                            int damage = rd.nextInt((PLAYERATK-(PLAYERATK-3))+1)+(PLAYERATK-3);
-                            double hit = Math.random();
-                            double dodge = Math.random();
-                            if(hit < PLAYERACC && dodge > ENEMYAGI){
-                                ENEMYHP = ENEMYHP - damage;
-                                System.out.println("\nYou hit the slime with your " + PLAYERATKTYPE);
-                                System.out.println("The slime took" + damage +".\nIt now has " + ENEMYHP);
+                        	if(battle.hitEnemy() == true){
+                            	battle.damageEnemy();
+                                ENEMYHP = battle.getEnemyHp();
+                                System.out.println(battle.enemyHitText(ENEMYTYPE));
                                 TimeUnit.SECONDS.sleep(2);
                             }if(ENEMYHP>0){
                         int enemyDamage = rd.nextInt((ENEMYATK-(ENEMYATK-3))+1)+(ENEMYATK-3);
@@ -405,50 +401,85 @@ public class TextGame {
         }
         }
         System.out.println(PLAYERNAME + " reached the town of Idgaf");
-        System.out.print(PLAYERNAME + " sees in front of "+ PLAYERNAME + ":\n\t1.A shop\n\t2.An Inn\n\t3.A Foreboding Ruins\nWhere does "+ PLAYERNAME + " go?");
-        for(boolean inIdgaf = true; inIdgaf = true;){
-        String response = input.nextLine();
-        if(response.equals("1") || response.equals("shop")){
-        	for(boolean inShop = true; inShop != false;){
-        		System.out.print("What would you like to do?\n\t1.Buy\n\t2.Talk\n\t3.Exit\n");
-        		String doing = input.next();
-        		switch(doing){
+        System.out.print(PLAYERNAME + " sees in front of themself :\n\t1.A shop\n\t2.An Inn\n\t3.A Foreboding Ruins\nWhere does "+ PLAYERNAME + " go?");
+        for(boolean inIdgaf = true; inIdgaf != false;){
+	        String response = input.nextLine();
+	        if(response.equals("1") || response.equals("shop")){
+	        	for(boolean inShop = true; inShop != false;){
+	        		System.out.print("What would you like to do?\n\t1.Buy\n\t2.Talk\n\t3.Exit\n");
+	        		String doing = input.next();
+	        		switch(doing){
+		        		case"1":
+		        		case"shop":
+		        		case"Shop":
+		        			System.out.println("\t\t\tGold:" + WALLET);
+		        			for(int i = 0, n = idgafShopInven.length; i < n; i++){
+		        				if(idgafShopInven[i] != null){
+		        					System.out.println(idgafShopInven[i]);
+		        				}
+		        			}
+		        			System.out.print("Enter the list number of the item you wish to purchase('exit' to exit): ");
+		        			String choice = input.next();
+		        			if(choice.matches("[exitEXIT]")){
+		        				break;
+		        			}
+		        			idgafShop.setInven(buying);
+		        			WALLET = idgafShop.getGold();
+		        			invenNo[buying] = idgafShop.getInven();
+		        			inven[buying] = items[buying] + "\t\t" + invenNo[buying];
+		        			break;
+		        		case"2":
+		        		case"talk":
+		        		case"Talk":
+		        			System.out.println("We've got everything you could ever need here, potions, weapons, you name it!");
+		        			TimeUnit.SECONDS.sleep(2);
+		        			break;
+		        		case"3":
+		        		case"exit":
+		        		case"Exit":
+		        			inShop = false;
+		        			System.out.print(PLAYERNAME + " sees in front of themself :\n\t1.A shop\n\t2.An Inn\n\t3.A Foreboding Ruins\nWhere does "+ PLAYERNAME + " go?");
+		        			break;
+	        		}
+	        	} 
+	        }else if(response.equals("2")||response.matches("[aAinnInn]")){
+	    		for(boolean inInn = true; inInn != false;){
+	    		System.out.print("What would you like to do?\n\t1.Stay the night\t\t5G\n\t2.Talk\n\t3.Exit\n");
+	    		String doing = input.next();
+	    		switch(doing){
 	        		case"1":
-	        		case"shop":
-	        		case"Shop":
-	        			System.out.println("\t\t\tGold:" + WALLET);
-	        			for(int i = 0, n = idgafShopInven.length; i < n; i++){
-	        				if(idgafShopInven[i] != null){
-	        					System.out.println(idgafShopInven[i]);
-	        				}
-	        			}
-	        			System.out.print("Enter the list number of the item you wish to purchase('exit' to exit): ");
-	        			String choice = input.next();
-	        			if(choice.matches("[exitEXIT]")){
-	        				break;
-	        			}
-	        			idgafShop.setInven(buying);
-	        			WALLET = idgafShop.getGold();
-	        			invenNo[buying] = idgafShop.getInven();
-	        			inven[buying] = items[buying] + "\t\t" + invenNo[buying];
+	        		case"":
+	        		case"stay":
+	        			if(WALLET>=5){
+	        				PLAYERHP = MAXPLAYERHP;
+	        				WALLET -= 5;
+	        				//testing this
+	        				//System.out.println(PLAYERHP);
+	        				System.out.println(PLAYERNAME + " feels rested and refreshed!\n" + PLAYERNAME + " now has full HP!");
+	        			}	
 	        			break;
 	        		case"2":
 	        		case"talk":
 	        		case"Talk":
-	        			System.out.println("We've got everything you could ever need here, potions, weapons, you name it!");
+	        			System.out.println("Welcome to the Drowsy Marsupial. Our rooms are cheap, our people are friendly, and our food is good!");
 	        			TimeUnit.SECONDS.sleep(2);
 	        			break;
 	        		case"3":
 	        		case"exit":
 	        		case"Exit":
-	        			inShop = false;
+	        			inInn = false;
+	        			System.out.print(PLAYERNAME + " sees in front of themself:\n\t1.A shop\n\t2.An Inn\n\t3.A Foreboding Ruins\nWhere does "+ PLAYERNAME + " go?");
 	        			break;
-        		}
-        	}
-        	
-        }
-        }
+	    		}
+	    	}
+	    	
+	        }else if(response.equals("3")){
+	        	inIdgaf = false;
+	        }else{
+	        	System.out.println("Please enter 1, 2, or 3");
+	        }
+    }
+
     }
 }
-
 
