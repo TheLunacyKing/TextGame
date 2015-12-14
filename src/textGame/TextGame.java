@@ -124,8 +124,8 @@ public class TextGame {
         //forest starts here
         for (int encounters = 1;PLAYERHP>0 && encounters <= 5; encounters++){
             idx = rd.nextInt(3);
-            String[] enemy = {"a Skeleton", "a Slime", "Tim Cao"};
-            System.out.println("you are attacked by " + enemy[idx] + "!");
+            String[] enemy = {"Skeleton", "Slime", "Wild Timothy"};
+            System.out.println("you are attacked by a " + enemy[idx] + "!");
             String ENEMYTYPE = enemy[idx];
             TimeUnit.SECONDS.sleep(1);
             switch (idx) {
@@ -135,14 +135,32 @@ public class TextGame {
                     ENEMYATK = 10;
                     ENEMYACC = .75;
                     ENEMYAGI = .10;
-                    for (boolean runaway = false;runaway == false && PLAYERHP>0 && ENEMYHP>0;){
-                        System.out.println("The Skeleton has " + ENEMYHP + " HP");
-                        System.out.println(PLAYERNAME + " has " + PLAYERHP + " HP");
-                        System.out.println("Do you:"
-                                + "\n\t1.Attack"
-                                + "\n\t2.Use an item"
-                                + "\n\t3.Run");
-                        String response = input.next();
+                    break;
+                case 1:
+                    MAXENEMYHP = 15;
+                    ENEMYHP = MAXENEMYHP;
+                    ENEMYATK = 4;
+                    ENEMYACC = .75;
+                    ENEMYAGI = .10;
+                    break;
+                case 2:
+                    MAXENEMYHP = 18;
+                    ENEMYHP = MAXENEMYHP;
+                    ENEMYATK = 3;
+                    ENEMYACC = .75;
+                    ENEMYAGI = .10;
+                    break;
+                default:
+                    break;
+            }
+            for (boolean runaway = false;runaway == false && PLAYERHP>0 && ENEMYHP>0;){
+                System.out.println("The " + ENEMYTYPE + " has " + ENEMYHP + " HP");
+                System.out.println(PLAYERNAME + " has " + PLAYERHP + " HP");
+                System.out.println("Do you:"
+                        + "\n\t1.Attack"
+                        + "\n\t2.Use an item"
+                        + "\n\t3.Run");
+                String response = input.next();
                 switch (response) {
                     case "1":
                         if(battle.hitEnemy() == true){
@@ -152,19 +170,13 @@ public class TextGame {
                             TimeUnit.SECONDS.sleep(2);
 
                         }else{
-                            System.out.println(PLAYERNAME + " missed the skeleton");
+                            System.out.println(PLAYERNAME + " missed the " + ENEMYTYPE);
                             TimeUnit.SECONDS.sleep(2);
-                        }if(ENEMYHP>0){
-                        int enemyDamage = rd.nextInt((ENEMYATK-(ENEMYATK-3))+1)+(ENEMYATK-3);
-                        hit = Math.random();
-                        dodge = Math.random();
-                        if(hit < ENEMYACC && dodge > PLAYERAGI){
-                            PLAYERHP = PLAYERHP - enemyDamage;
-                            System.out.println("\nThe skeleton hit " + PLAYERNAME + "!");
-                            System.out.println(PLAYERNAME + " took" + enemyDamage +".\n" + PLAYERNAME + " now has " + PLAYERHP + "\n");
+                        }if(ENEMYHP>0 && battle.hitPlayer()==true){
+                        	battle.damagePlayer();
+                            PLAYERHP = battle.getPlayerHp();
+                            System.out.println(battle.playerHitText(ENEMYTYPE));
                             TimeUnit.SECONDS.sleep(2);
-
-                        }
                         }
                         break;
                     case "2":
@@ -189,16 +201,15 @@ public class TextGame {
                     case "3":
                         double run = Math.random();
                         if(run/PLAYERAGI >= 1){
-                            System.out.println(PLAYERNAME + " escaped from the Skeleton");
+                            System.out.println(PLAYERNAME + " escaped from the " + ENEMYTYPE);
                             runaway = true;
                             TimeUnit.SECONDS.sleep(2);
                         }else{
                             System.out.println(PLAYERNAME + " couldn't escape!");
                             TimeUnit.SECONDS.sleep(2);
-                            int enemyDamage = rd.nextInt((ENEMYATK-(ENEMYATK-3))+1)+(ENEMYATK-3);
-                            PLAYERHP = PLAYERHP - enemyDamage;
-                            System.out.println("\nThe skeleton hit " + PLAYERNAME + "!");
-                            System.out.println(PLAYERNAME + " took" + enemyDamage +".\n" + PLAYERNAME + " now has " + PLAYERHP + "\n");
+                            battle.damagePlayer();
+                            PLAYERHP = battle.getPlayerHp();
+                            System.out.println(battle.playerHitText(ENEMYTYPE));
                             TimeUnit.SECONDS.sleep(2);
                         }
                         break;
@@ -210,186 +221,17 @@ public class TextGame {
                             int expDrop = rd.nextInt ((8-6)+1)+6;
                             toNext = EXPLEVEL - expDrop;
                             WALLET = WALLET + goldDrop;
-                            System.out.println(PLAYERNAME + " defeated the skeleton!");
+                            System.out.println(PLAYERNAME + " defeated the " + ENEMYTYPE + "!");
                             TimeUnit.SECONDS.sleep(1);
                             //System.out.println(PLAYERNAME + " gained " + expDrop + " experience!\nNext level is in " + toNext + " experience.");
                             //TimeUnit.SECONDS.sleep(1);
-                            System.out.println("The skeleton dropped " + goldDrop + " gold doubloons");
+                            System.out.println("The " + ENEMYTYPE + " dropped " + goldDrop + " gold doubloons");
                             System.out.println(PLAYERNAME + " grabs 'em and goes.\n"
                                     + PLAYERNAME + " now has " + WALLET + " gold doubloons");
                             TimeUnit.SECONDS.sleep(4);
                         }
                         
-                    }   break;
-                case 1:
-                    MAXENEMYHP = 15;
-                    ENEMYHP = MAXENEMYHP;
-                    ENEMYATK = 4;
-                    ENEMYACC = .75;
-                    ENEMYAGI = .10;
-                    for (boolean runaway = false;runaway == false && PLAYERHP>0 && ENEMYHP>0;){
-                        System.out.println("The Slime has " + ENEMYHP + " HP");
-                        System.out.println(PLAYERNAME + " has " + PLAYERHP + " HP");
-                        System.out.println("Do you:"
-                                + "\n\t1.Attack"
-                                + "\n\t2.Use an item"
-                                + "\n\t3.Run");
-                        String response = input.next();
-                        if (response.equals("1")){
-                        	if(battle.hitEnemy() == true){
-                            	battle.damageEnemy();
-                                ENEMYHP = battle.getEnemyHp();
-                                System.out.println(battle.enemyHitText(ENEMYTYPE));
-                                TimeUnit.SECONDS.sleep(2);
-                            }if(ENEMYHP>0){
-                        int enemyDamage = rd.nextInt((ENEMYATK-(ENEMYATK-3))+1)+(ENEMYATK-3);
-                        hit = Math.random();
-                        dodge = Math.random();
-                        if(hit < ENEMYACC && dodge > PLAYERAGI){
-                            PLAYERHP = PLAYERHP - enemyDamage;
-                            System.out.println("\nThe slime hit " + PLAYERNAME + "!");
-                            System.out.println(PLAYERNAME + " took" + enemyDamage +".\n" + PLAYERNAME + " now has " + PLAYERHP + "\n");
-                            TimeUnit.SECONDS.sleep(2);
-                        }
-                        }
-                        }else if(response.equals("2")){
-                            System.out.println("Which item?");
-                            for(int i = 0, n = inven.length; i < n; i++){
-    	        				if(inven[i] != null){
-    	        					System.out.println(inven[i]);
-    	        				}
-    	        			}
-                            System.out.print("Enter the list number of the item to be used:");
-                            int itemUsed = input.nextInt();
-                            if(itemUsed == 1 && invenNo[0]>=1){
-                                invenNo[0]=invenNo[0] - 1;
-                                inven[0] = "1."+ items[0]+ "\t\t" +invenNo[0];
-                                heal.setHealthValue(PLAYERHP + 20);
-                                PLAYERHP = heal.getHealthValue();
-                                System.out.println(PLAYERNAME + " healed for 20 HP!");
-                                System.out.println(PLAYERNAME + " now has " + PLAYERHP + " HP!\n\n");
-                                TimeUnit.SECONDS.sleep(2);
-                            }
-                        }else if(response.equals("3")){
-                            double run = Math.random();
-                            if(run >= PLAYERAGI){
-                                System.out.println(PLAYERNAME + " escaped from the slime");
-                                runaway = true;
-                                TimeUnit.SECONDS.sleep(2);
-                            }else{
-                                System.out.println(PLAYERNAME + " couldn't escape!");
-                                TimeUnit.SECONDS.sleep(2);
-                                int enemyDamage = rd.nextInt((ENEMYATK-(ENEMYATK-3))+1)+(ENEMYATK-3);
-                                PLAYERHP = PLAYERHP - enemyDamage;
-                                System.out.println("\nThe slime hit " + PLAYERNAME + "!");
-                                System.out.println(PLAYERNAME + " took" + enemyDamage +".\n" + PLAYERNAME + " now has " + PLAYERHP + "\n");
-                                TimeUnit.SECONDS.sleep(2);
-                            }
-                        }
-                        if(ENEMYHP<1){
-                            int goldDrop = rd.nextInt(GOLD-(GOLD/2)+1)+(GOLD/2);
-                            int expDrop = rd.nextInt ((8-6)+1)+6;
-                            toNext = EXPLEVEL - expDrop;
-                            WALLET = WALLET + goldDrop;
-                            System.out.println(PLAYERNAME + " defeated the slime!");
-                            TimeUnit.SECONDS.sleep(1);
-                            //System.out.println(PLAYERNAME + " gained " + expDrop + " experience!\nNext level is in " + toNext + " experience.");
-                            //TimeUnit.SECONDS.sleep(1);
-                            System.out.println("The slime dropped " + goldDrop + " gold doubloons");
-                            System.out.println(PLAYERNAME + " grabs 'em and goes.\n"
-                                    + PLAYERNAME + " now has " + WALLET + " gold doubloons");
-                            TimeUnit.SECONDS.sleep(4);
-                        }
-                        
-                    }   break;
-                case 2:
-                    MAXENEMYHP = 18;
-                    ENEMYHP = MAXENEMYHP;
-                    ENEMYATK = 3;
-                    ENEMYACC = .75;
-                    ENEMYAGI = .10;
-                    for (boolean runaway = false;runaway == false && PLAYERHP>0 && ENEMYHP>0;){
-                        System.out.println("Tim Cao has " + ENEMYHP + " HP");
-                        System.out.println(PLAYERNAME + " has " + PLAYERHP + " HP");
-                        System.out.println("Do you:"
-                                + "\n\t1.Attack"
-                                + "\n\t2.Use an item"
-                                + "\n\t3.Run");
-                        String response = input.next();
-                        if (response.equals("1")){
-                            int damage = rd.nextInt((PLAYERATK-(PLAYERATK-3))+1)+(PLAYERATK-3);
-                            double hit = Math.random();
-                            double dodge = Math.random();
-                            if(hit < PLAYERACC && dodge > ENEMYAGI){
-                                ENEMYHP = ENEMYHP - damage;
-                                System.out.println("\nYou hit Tim Cao with your " + PLAYERATKTYPE);
-                                System.out.println("Tim Cao took" + damage +".\nIt now has " + ENEMYHP);
-                                TimeUnit.SECONDS.sleep(2);
-                            }if(ENEMYHP>0){
-                        int enemyDamage = rd.nextInt((ENEMYATK-(ENEMYATK-3))+1)+(ENEMYATK-3);
-                        hit = Math.random();
-                        dodge = Math.random();
-                        if(hit < ENEMYACC && dodge > PLAYERAGI){
-                            PLAYERHP = PLAYERHP - enemyDamage;
-                            System.out.println("\nTim Cao hit " + PLAYERNAME + "!");
-                            System.out.println(PLAYERNAME + " took" + enemyDamage +".\n" + PLAYERNAME + " now has " + PLAYERHP + "\n");
-                            TimeUnit.SECONDS.sleep(2);
-                        }
-                        }
-                        }else if(response.equals("2")){
-                            System.out.println("Which item?");
-                            for(int i = 0, n = inven.length; i < n; i++){
-    	        				if(inven[i] != null){
-    	        					System.out.println(inven[i]);
-    	        				}
-    	        			}
-                            System.out.print("Enter the list number of the item to be used:");
-                            int itemUsed = input.nextInt();
-                            if(itemUsed == 1 && invenNo[0]>=1){
-                                invenNo[0]=invenNo[0] - 1;
-                                inven[0] = "1."+ items[0]+ "\t\t" +invenNo[0];
-                                heal.setHealthValue(PLAYERHP + 20);
-                                PLAYERHP = heal.getHealthValue();
-                                System.out.println(PLAYERNAME + " healed for 20 HP!");
-                                System.out.println(PLAYERNAME + " now has " + PLAYERHP + " HP!\n\n");
-                                TimeUnit.SECONDS.sleep(2);
-                                
-                            }
-                        }else if(response.equals("3")){
-                            double run = Math.random();
-                            if(run >= PLAYERAGI){
-                                System.out.println(PLAYERNAME + " escaped from Tim Cao");
-                                runaway = true;
-                                TimeUnit.SECONDS.sleep(2);
-                            }else{
-                                System.out.println(PLAYERNAME + " couldn't escape!");
-                                TimeUnit.SECONDS.sleep(1);
-                                int enemyDamage = rd.nextInt((ENEMYATK-(ENEMYATK-3))+1)+(ENEMYATK-3);
-                                PLAYERHP = PLAYERHP - enemyDamage;
-                                System.out.println("\nTim Cao hit " + PLAYERNAME + "!");
-                                System.out.println(PLAYERNAME + " took" + enemyDamage +".\n" + PLAYERNAME + " now has " + PLAYERHP + "\n");
-                                TimeUnit.SECONDS.sleep(2);
-                            }
-                        }
-                        if(ENEMYHP<1){
-                            int goldDrop = rd.nextInt(GOLD-(GOLD/2)+1)+(GOLD/2);
-                            int expDrop = rd.nextInt ((8-6)+1)+6;
-                            toNext = EXPLEVEL - expDrop;
-                            WALLET = WALLET + goldDrop;
-                            System.out.println(PLAYERNAME + " defeated Tim Cao!");
-                            TimeUnit.SECONDS.sleep(1);
-                            //System.out.println(PLAYERNAME + " gained " + expDrop + " experience!\nNext level is in " + toNext + " experience.");
-                            //TimeUnit.SECONDS.sleep(1);
-                            System.out.println("Tim Cao dropped " + goldDrop + " gold doubloons");
-                            System.out.println(PLAYERNAME + " grabs 'em and goes.\n"
-                                    + PLAYERNAME + " now has " + WALLET + " gold doubloons");
-                            TimeUnit.SECONDS.sleep(4);
-                        }
-                        
-                    }   break;
-                default:
-                    break;
-            }
+                    }
             if(PLAYERHP<1){
                 System.out.print("You appear to have died, would you like to start over from the beginning of the forest?(y/n)");
                 String response = input.next();
